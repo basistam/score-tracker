@@ -10,9 +10,9 @@ import {
   Button,
   Icon
 } from 'native-base';
-import Results from './components/Results';
-import Settings from './components/Settings';
-import Tracker from './components/Tracker';
+import Results from './Results';
+import Settings from './Settings';
+import Tracker from './Tracker';
 import Immutable from 'immutable';
 
 class App extends Component {

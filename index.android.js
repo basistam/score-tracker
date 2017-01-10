@@ -5,6 +5,6 @@
  */
 
 import {AppRegistry} from 'react-native';
-import App from './js/App';
+import Root from './js/Root';
 
-AppRegistry.registerComponent('ScoreTracker', () => App);
+AppRegistry.registerComponent('ScoreTracker', () => Root);
