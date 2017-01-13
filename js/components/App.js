@@ -78,10 +78,11 @@ class App extends Component {
   }
 
   render() {
+    const {newGame} = this.props;
     return (
       <Container>
         <Header>
-          <Button transparent><Icon name="ios-refresh"/></Button>
+          <Button transparent onPress={() => newGame()}><Icon name="ios-refresh"/></Button>
           <Title>{this.getTitle(this.state.activePage)}</Title>
         </Header>
 
@@ -111,6 +112,7 @@ class App extends Component {
 }
 
 App.propTypes = {
+  newGame: React.PropTypes.func.isRequired
 };
 App.defaultProps = {};
 
