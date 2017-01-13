@@ -14,18 +14,39 @@ import {
   Grid
 } from 'react-native-easy-grid';
 import TrackButton from './TrackButton';
+import {createEvent} from '../utils//GameUtils';
+import Event from '../constants/Event';
 
 class Tracker extends React.Component {
   render() {
-    const {homeTeam, guestTeam, guestDefensePlayer, guestOffensePlayer, homeDefensePlayer, homeOffensePlayer} = this.props;
+    const {
+      homeTeam,
+      guestTeam,
+      guestDefensePlayer,
+      guestOffensePlayer,
+      homeDefensePlayer,
+      homeOffensePlayer,
+      score,
+      undo,
+      playerScores,
+      swapPlayers
+    } = this.props;
     return (
       <Grid>
         <Row>
           <Col>
-            <TrackButton danger player={guestOffensePlayer} />
+            <TrackButton danger
+              player={guestOffensePlayer}
+              score={score.getIn(['players', guestOffensePlayer.get('id')])}
+              onPress={() => playerScores(createEvent(guestTeam, guestOffensePlayer, Event.GOAL_GUEST))}
+              onLongPress={() => playerScores(createEvent(guestTeam, guestOffensePlayer, Event.GOAL_HOME))} />
           </Col>
           <Col>
-            <TrackButton success player={guestDefensePlayer} />
+            <TrackButton success
+              player={guestDefensePlayer}
+              score={score.getIn(['players', guestDefensePlayer.get('id')])}
+              onPress={() => playerScores(createEvent(guestTeam, guestDefensePlayer, Event.GOAL_GUEST))}
+              onLongPress={() => playerScores(createEvent(guestTeam, guestDefensePlayer, Event.GOAL_HOME))} />
           </Col>
         </Row>
 
@@ -37,11 +58,11 @@ class Tracker extends React.Component {
 
         <Row>
           <Col size={2}>
-            <Text style={style.homeTeamScore}><Icon name="ios-arrow-down"/> 0</Text>
+            <Text style={style.homeTeamScore}><Icon name="ios-arrow-down"/> {score.getIn(['teams', 'home'])}</Text>
           </Col>
           <Col size={1}><Text style={style.scoreDividerText}>vs</Text></Col>
           <Col size={2}>
-            <Text style={style.guestTeamScore}>0 <Icon name="ios-arrow-up"/></Text>
+            <Text style={style.guestTeamScore}>{score.getIn(['teams', 'guest'])} <Icon name="ios-arrow-up"/></Text>
           </Col>
         </Row>
 
@@ -53,10 +74,18 @@ class Tracker extends React.Component {
 
         <Row>
           <Col>
-            <TrackButton success player={homeDefensePlayer} />
+            <TrackButton success
+              player={homeDefensePlayer}
+              score={score.getIn(['players', homeDefensePlayer.get('id')])}
+              onPress={() => playerScores(createEvent(homeTeam, homeDefensePlayer, Event.GOAL_HOME))}
+              onLongPress={() => playerScores(createEvent(homeTeam, homeDefensePlayer, Event.GOAL_GUEST))} />
           </Col>
           <Col>
-            <TrackButton danger player={homeOffensePlayer} />
+            <TrackButton danger
+              player={homeOffensePlayer}
+              score={score.getIn(['players', homeOffensePlayer.get('id')])}
+              onPress={() => playerScores(createEvent(homeTeam, homeOffensePlayer, Event.GOAL_HOME))}
+              onLongPress={() => playerScores(createEvent(homeTeam, homeOffensePlayer, Event.GOAL_GUEST))} />
           </Col>
         </Row>
 
@@ -67,18 +96,27 @@ class Tracker extends React.Component {
         <Row>
           <Col>
           <View padder>
-            <Button block warning><Icon name="ios-swap"/>Home</Button>
+            <Button block warning
+              onPress={() => swapPlayers(homeOffensePlayer, homeDefensePlayer)} >
+              <Icon name="ios-swap"/>Home
+            </Button>
           </View>
           </Col>
           <Col>
           <View padder>
-            <Button block warning><Icon name="ios-swap"/>Guest</Button>
+            <Button block warning
+              onPress={() => swapPlayers(guestDefensePlayer, guestOffensePlayer)} >
+              <Icon name="ios-swap"/>Guest
+            </Button>
           </View>
           </Col>
         </Row>
         <Row>
           <View padder>
-            <Button block><Icon name="ios-undo"/>Undo</Button>
+            <Button block
+              onPress={() => undo()}>
+              <Icon name="ios-undo"/>Undo
+            </Button>
           </View>
         </Row>
       </Grid>
@@ -87,12 +125,16 @@ class Tracker extends React.Component {
 }
 
 Tracker.propTypes = {
-  homeTeam: React.PropTypes.object,
-  guestTeam: React.PropTypes.object,
-  guestDefensePlayer: React.PropTypes.object,
-  guestOffensePlayer: React.PropTypes.object,
-  homeDefensePlayer: React.PropTypes.object,
-  homeOffensePlayer: React.PropTypes.object
+  homeTeam: React.PropTypes.object.isRequired,
+  guestTeam: React.PropTypes.object.isRequired,
+  guestDefensePlayer: React.PropTypes.object.isRequired,
+  guestOffensePlayer: React.PropTypes.object.isRequired,
+  homeDefensePlayer: React.PropTypes.object.isRequired,
+  homeOffensePlayer: React.PropTypes.object.isRequired,
+  score: React.PropTypes.object.isRequired,
+  undo: React.PropTypes.func.isRequired,
+  playerScores: React.PropTypes.func.isRequired,
+  swapPlayers: React.PropTypes.func.isRequired,
 };
 
 Tracker.defaultProps = {};

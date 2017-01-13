@@ -5,7 +5,7 @@ import Immutable from 'immutable';
 
 class TrackButton extends React.Component {
   render() {
-    const {player} = this.props;
+    const {player, score} = this.props;
     return (
       <View padder>
         <Button block style={style.button} {...this.props}>
@@ -18,7 +18,7 @@ class TrackButton extends React.Component {
           position: 'absolute',
           right: 5,
           top: 5
-        }}>0</Badge>
+        }}>{score}</Badge>
       </View>
     );
   }
@@ -31,7 +31,8 @@ const style = StyleSheet.create({
 });
 
 TrackButton.propTypes = {
-  player: React.PropTypes.object
+  player: React.PropTypes.object.isRequired,
+  score: React.PropTypes.number.isRequired
 };
 
 TrackButton.defaultProps = {

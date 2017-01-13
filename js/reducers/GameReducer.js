@@ -19,6 +19,8 @@ export default function (state = initialState, action) {
       return state.set('endDate', action.endDate);
     case Actions.ADD_EVENT:
       return state.update('events', events => events.push(action.event));
+    case Actions.UNDO:
+      return state.update('events', events => events.pop());
     default:
       return state;
   }

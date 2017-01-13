@@ -32,7 +32,7 @@ const setInPlayerId = (state, field, id, value) => {
   return state.setIn(
     [
       state.findIndex((player) => player.get('id') === id),
-      'name'
+      field
     ],
     value
   );
