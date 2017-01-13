@@ -1,6 +1,5 @@
 import Immutable from 'immutable';
 import uuid from 'uuid';
-import Event from '../constants/Event';
 
 const defaultScore = Immutable.fromJS({
   teams: {
@@ -27,6 +26,7 @@ export const getScore = (game) => {
 export const createEvent = (team, player, type) => Immutable.fromJS({
   id: uuid.v4(),
   team: team.get('id'),
+  eventDate: new Date(),
   player: player,
   type: type
 });

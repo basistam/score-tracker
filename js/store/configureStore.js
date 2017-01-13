@@ -5,6 +5,7 @@ import {
 import rootReducer from '../reducers';
 import thunk from 'redux-thunk';
 
+
 export default (initialState) => {
   let store = createStore(
     rootReducer,

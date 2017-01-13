@@ -8,7 +8,7 @@ export const addToHistory = (game) => ({
   game: game
 });
 
-export const removeFromHistory = (index) => ({
+export const removeFromHistory = (id) => ({
   type: REMOVE_FROM_HISTORY,
-  index: index
+  id: id
 });

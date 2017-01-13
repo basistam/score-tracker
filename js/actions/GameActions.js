@@ -41,6 +41,8 @@ export const undo = () => ({
 });
 
 export const saveResult = () => (dispatch, getState) => {
-  dispatch(HistoryActions.addToHistory(getState().get('game')));
+  const state = getState();
+  const game = state.get('game').set('home', state.getIn(['teams', 'home'])).set('guest', state.getIn(['teams', 'guest'])).set('players', state.get('players'));
+  dispatch(HistoryActions.addToHistory(game));
   dispatch(newGame());
 };

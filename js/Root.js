@@ -8,10 +8,12 @@ import Immutable from 'immutable';
 
 const initialState = Immutable.Map();
 
+const store = configureStore(initialState);
+
 class Root extends React.Component {
   render() {
     return (
-      <Provider store={configureStore(initialState)}>
+      <Provider store={store}>
         <AppContainer />
       </Provider>
     );

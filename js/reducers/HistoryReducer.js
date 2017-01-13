@@ -8,7 +8,7 @@ export default function (state = initialState, action) {
     case Actions.ADD_TO_HISTORY:
       return state.push(action.game);
     case Actions.REMOVE_FROM_HISTORY:
-      return state.delete(action.index);
+      return state.delete(state.findIndex((history) => history.get('id') === action.id));
     default:
       return state;
   }
