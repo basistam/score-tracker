@@ -26,13 +26,14 @@ class DebouncedInput extends React.Component {
     const {placeholder, ...otherProps} = this.props;
     return (
       <ListItem>
-      <InputGroup>
+        <InputGroup>
         <Input
+          inlineLabel
           {...otherProps}
           placeholder={placeholder}
           value={this.state.value}
           onChangeText={(value) => this.onChange(value)}/>
-      </InputGroup>
+        </InputGroup>
       </ListItem>
     );
   }

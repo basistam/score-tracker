@@ -7,63 +7,62 @@ import {
 import DebouncedInput from './DebouncedInput';
 
 class Settings extends React.Component {
+  getTeamSettings() {
+    const {players, setPlayerName, teams, setTeamName} = this.props;
+    const rows = [];
+
+    teams.forEach((team) => {
+      rows.push(
+        <ListItem itemDivider key={team.get('id') + 'divider'}>
+          <Text>{team.get('title')} settings</Text>
+        </ListItem>
+      );
+
+      rows.push(
+        <DebouncedInput
+          key={team.get('id') + 'name'}
+          label={team.get('title')}
+          value={team.get('name')}
+          onChangeText={(value) => setTeamName(team.get('id'), value)} />
+      );
+
+      players.filter((player) => player.get('team') === team.get('id')).forEach((player) => {
+        rows.push(
+          <DebouncedInput
+            key={team.get('id') + 'player' + player.get('id')}
+            label="Player name"
+            value={player.get('name')}
+            onChangeText={(value) => setPlayerName(player.get('id'), value)} />
+        );
+      });
+    });
+
+    return rows;
+  }
+
   render() {
-    const {team1, team2, onChangeTeamName, onChangePlayerName, onChangeSetScore, setScore} = this.props;
+    const {onChangeSetScore, setScore} = this.props;
     return (
       <List>
         <ListItem itemDivider>
           <Text>Set score</Text>
         </ListItem>
 
-        <DebouncedInput placeholder="Set score" value={setScore} maxLength={12} onChangeText={(value) => onChangeSetScore(value)}/>
+        <DebouncedInput keyboardType="numeric" label="Set score" value={String(setScore)} maxLength={12} onChangeText={onChangeSetScore}/>
 
-        <ListItem itemDivider>
-          <Text>Team 1</Text>
-        </ListItem>
-
-        <DebouncedInput placeholder="Team 1 name" value={team1.get('name')} maxLength={12} onChangeText={(value) => onChangeTeamName('team1', value)}/>
-
-        <ListItem itemDivider>
-          <Text>Team 1 Player 1</Text>
-        </ListItem>
-
-        <DebouncedInput placeholder="Player 1 name" value={team1.get('player1').get('name')} onChangeText={(value) => onChangePlayerName('team1', 'player1', value)}/>
-
-        <ListItem itemDivider>
-          <Text>Team 1 Player 2</Text>
-        </ListItem>
-
-        <DebouncedInput placeholder="Player 2 name" value={team1.get('player2').get('name')} onChangeText={(value) => onChangePlayerName('team1', 'player2', value)}/>
-
-        <ListItem itemDivider>
-          <Text>Team 2</Text>
-        </ListItem>
-
-        <DebouncedInput placeholder="Team 2 name" value={team2.get('name')} maxLength={12} onChangeText={(value) => onChangeTeamName('team2', value)}/>
-
-        <ListItem itemDivider>
-          <Text>Team 2 Player 1</Text>
-        </ListItem>
-
-        <DebouncedInput placeholder="Player 1 name" value={team2.get('player1').get('name')} onChangeText={(value) => onChangePlayerName('team2', 'player1', value)}/>
-
-        <ListItem itemDivider>
-          <Text>Team 2 Player 2</Text>
-        </ListItem>
-
-        <DebouncedInput placeholder="Player 2 name" value={team2.get('player2').get('name')} onChangeText={(value) => onChangePlayerName('team2', 'player2', value)}/>
+        {this.getTeamSettings()}
       </List>
     );
   }
 }
 
 Settings.propTypes = {
-  team1: React.PropTypes.object,
-  team2: React.PropTypes.object,
-  onChangeTeamName: React.PropTypes.func,
+  setScore: React.PropTypes.number,
   onChangeSetScore: React.PropTypes.func,
-  onChangePlayerName: React.PropTypes.func,
-  setScore: React.PropTypes.number
+  players: React.PropTypes.object,
+  teams: React.PropTypes.object,
+  setTeamName: React.PropTypes.func,
+  setPlayerName: React.PropTypes.func
 };
 Settings.defaultProps = {};
 

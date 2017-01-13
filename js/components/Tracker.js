@@ -1,129 +1,123 @@
 import React from 'react';
-import {Text, View, Button, H3} from 'native-base';
-import {Col, Row, Grid} from 'react-native-easy-grid';
+import {
+  StyleSheet
+} from 'react-native';
+import {
+  Text,
+  View,
+  Button,
+  Icon
+} from 'native-base';
+import {
+  Col,
+  Row,
+  Grid
+} from 'react-native-easy-grid';
 import TrackButton from './TrackButton';
 
-class Track extends React.Component {
+class Tracker extends React.Component {
   render() {
-    const {team1, team2, onScore, onReset, onSwap, setScore} = this.props;
+    const {homeTeam, guestTeam, guestDefensePlayer, guestOffensePlayer, homeDefensePlayer, homeOffensePlayer} = this.props;
     return (
       <Grid>
         <Row>
           <Col>
-            <View padder>
-              <H3 style={{
-                alignSelf: 'flex-end'
-              }}>{team1.get('name')}</H3>
-            </View>
+            <TrackButton danger player={guestOffensePlayer} />
           </Col>
-          <Col style={{width: 30}}><Text style={{lineHeight: 40, alignSelf: 'center'}}>vs.</Text></Col>
           <Col>
-            <View padder>
-              <H3 style={{
-                alignSelf: 'flex-start'
-              }}>{team2.get('name')}</H3>
-            </View>
+            <TrackButton success player={guestDefensePlayer} />
           </Col>
         </Row>
 
         <Row>
-          <Col>
-            <Text style={{
-                color: team1.get('points') == setScore ? '#5cb85c' : '#000000',
-                alignSelf: 'flex-end',
-                fontSize: 60,
-                lineHeight: 60}}>
-              {team1.get('points')}
-            </Text>
-          </Col>
-          <Col style={{width: 50}}><Text style={{alignSelf: 'center', fontSize: 60, lineHeight: 60}}>-</Text></Col>
-            <Col>
-              <Text style={{
-                  color: team2.get('points') == setScore ? '#5cb85c' : '#000000',
-                  alignSelf: 'flex-start',
-                  fontSize: 60,
-                  lineHeight: 60}}>
-                {team2.get('points')}
-              </Text>
-            </Col>
+          <View>
+            <Text style={style.homeTeamName}>{guestTeam.get('name')}</Text>
+          </View>
         </Row>
 
         <Row>
-          <Col>
-            <View padder>
-              <TrackButton
-                player={team1.get('player1')}
-                playerId="player1"
-                teamId="team1"
-                pressAction={onScore}
-                />
-            </View>
+          <Col size={2}>
+            <Text style={style.homeTeamScore}><Icon name="ios-arrow-down"/> 0</Text>
           </Col>
-          <Col>
-            <View padder>
-              <TrackButton
-                player={team2.get('player1')}
-                playerId="player1"
-                teamId="team2"
-                pressAction={onScore}/>
-            </View>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <View padder>
-              <TrackButton
-                player={team1.get('player2')}
-                playerId="player2"
-                teamId="team1"
-                pressAction={onScore}/>
-            </View>
-          </Col>
-          <Col>
-            <View padder>
-              <TrackButton
-                player={team2.get('player2')}
-                playerId="player2"
-                teamId="team2"
-                pressAction={onScore}/>
-            </View>
+          <Col size={1}><Text style={style.scoreDividerText}>vs</Text></Col>
+          <Col size={2}>
+            <Text style={style.guestTeamScore}>0 <Icon name="ios-arrow-up"/></Text>
           </Col>
         </Row>
 
         <Row>
+          <View>
+            <Text style={style.guestTeamName}>{homeTeam.get('name')}</Text>
+          </View>
+        </Row>
+
+        <Row>
           <Col>
-            <View padder>
-              <Button block warning onPress={() => onSwap('team1')}>
-                Swap positions
-              </Button>
-            </View>
+            <TrackButton success player={homeDefensePlayer} />
           </Col>
           <Col>
-            <View padder>
-              <Button block warning onPress={() => onSwap('team2')}>
-                Swap positions
-              </Button>
-            </View>
+            <TrackButton danger player={homeOffensePlayer} />
+          </Col>
+        </Row>
+
+        <Row>
+          <View padder></View>
+        </Row>
+
+        <Row>
+          <Col>
+          <View padder>
+            <Button block warning><Icon name="ios-swap"/>Home</Button>
+          </View>
+          </Col>
+          <Col>
+          <View padder>
+            <Button block warning><Icon name="ios-swap"/>Guest</Button>
+          </View>
           </Col>
         </Row>
         <Row>
-            <View padder>
-              <Button block danger onPress={() => onReset()}>Reset</Button>
-            </View>
+          <View padder>
+            <Button block><Icon name="ios-undo"/>Undo</Button>
+          </View>
         </Row>
       </Grid>
     );
   }
 }
 
-Track.propTypes = {
-  team1: React.PropTypes.object,
-  team2: React.PropTypes.object,
-  onScore: React.PropTypes.func,
-  onSwap: React.PropTypes.func,
-  setScore: React.PropTypes.number,
-  onReset: React.PropTypes.func
+Tracker.propTypes = {
+  homeTeam: React.PropTypes.object,
+  guestTeam: React.PropTypes.object,
+  guestDefensePlayer: React.PropTypes.object,
+  guestOffensePlayer: React.PropTypes.object,
+  homeDefensePlayer: React.PropTypes.object,
+  homeOffensePlayer: React.PropTypes.object
 };
-Track.defaultProps = {};
 
-export default Track;
+Tracker.defaultProps = {};
+
+const style = StyleSheet.create({
+  guestTeamName: {
+    alignSelf: 'center'
+  },
+  homeTeamName: {
+    alignSelf: 'center'
+  },
+  scoreDividerText: {
+    alignSelf: 'center',
+    lineHeight: 80
+  },
+  homeTeamScore: {
+    alignSelf: 'flex-end',
+    fontSize: 80,
+    lineHeight: 80
+  },
+  guestTeamScore: {
+    alignSelf: 'flex-start',
+    fontSize: 80,
+    lineHeight: 80
+  }
+});
+
+export default Tracker;

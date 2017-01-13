@@ -1,8 +1,14 @@
 import {
   combineReducers
-} from 'redux';
+} from 'redux-immutable';
 import app from './AppReducer';
+import teams from './TeamsReducer';
+import players from './PlayersReducer';
+import game from './GameReducer';
 
 export default combineReducers({
-  app
+  app,
+  teams,
+  players,
+  game
 });
