@@ -1,4 +1,5 @@
 import * as GameUtils from '../utils/GameUtils';
+import * as HistoryActions from './HistoryActions';
 
 const PREFIX = 'GAME.';
 
@@ -27,12 +28,10 @@ export const playerScores = (event) => (dispatch, getState) => {
 
   const score = GameUtils.getScore(state.get('game')).get('teams');
   const setScore = state.get('app').get('setScore');
-  if (score.get('home') == setScore || score.get('guest') == setScore) {
-    dispatch(setEndDate());
-  } else {
+  if (score.get('home') < setScore && score.get('guest') < setScore) {
     dispatch(addEvent(event));
   }
-}
+};
 
 /**
  * Removes latest event from eventList
@@ -40,3 +39,8 @@ export const playerScores = (event) => (dispatch, getState) => {
 export const undo = () => ({
   type: UNDO
 });
+
+export const saveResult = () => (dispatch, getState) => {
+  dispatch(HistoryActions.addToHistory(getState().get('game')));
+  dispatch(newGame());
+};

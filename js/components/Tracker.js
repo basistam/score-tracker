@@ -8,6 +8,7 @@ import {
   Button,
   Icon
 } from 'native-base';
+import Theme from 'native-base/Components/Themes/light';
 import {
   Col,
   Row,
@@ -29,11 +30,19 @@ class Tracker extends React.Component {
       score,
       undo,
       playerScores,
-      swapPlayers
+      swapPlayers,
+      setScore,
+      newGame,
+      saveResult
     } = this.props;
+    const homeTeamScore = score.getIn(['teams', 'home']);
+    const guestTeamScore = score.getIn(['teams', 'guest']);
+    const matchFinished = homeTeamScore == setScore || guestTeamScore == setScore;
+    const victoryTeam = homeTeamScore == setScore ? homeTeam.get('name') : guestTeam.get('name');
+
     return (
       <Grid>
-        <Row>
+        {!matchFinished ? <Row>
           <Col>
             <TrackButton danger
               player={guestOffensePlayer}
@@ -48,7 +57,11 @@ class Tracker extends React.Component {
               onPress={() => playerScores(createEvent(guestTeam, guestDefensePlayer, Event.GOAL_GUEST))}
               onLongPress={() => playerScores(createEvent(guestTeam, guestDefensePlayer, Event.GOAL_HOME))} />
           </Col>
-        </Row>
+        </Row> : <Row>
+          <View padder>
+            <Text style={style.victoryTeam}>{victoryTeam} won!</Text>
+          </View>
+        </Row>}
 
         <Row>
           <View>
@@ -58,11 +71,11 @@ class Tracker extends React.Component {
 
         <Row>
           <Col size={2}>
-            <Text style={style.homeTeamScore}><Icon name="ios-arrow-down"/> {score.getIn(['teams', 'home'])}</Text>
+            <Text style={style.homeTeamScore}><Icon name="ios-arrow-down"/> {homeTeamScore}</Text>
           </Col>
           <Col size={1}><Text style={style.scoreDividerText}>vs</Text></Col>
           <Col size={2}>
-            <Text style={style.guestTeamScore}>{score.getIn(['teams', 'guest'])} <Icon name="ios-arrow-up"/></Text>
+            <Text style={style.guestTeamScore}>{guestTeamScore} <Icon name="ios-arrow-up"/></Text>
           </Col>
         </Row>
 
@@ -72,7 +85,7 @@ class Tracker extends React.Component {
           </View>
         </Row>
 
-        <Row>
+        {!matchFinished ? <Row>
           <Col>
             <TrackButton success
               player={homeDefensePlayer}
@@ -87,13 +100,13 @@ class Tracker extends React.Component {
               onPress={() => playerScores(createEvent(homeTeam, homeOffensePlayer, Event.GOAL_HOME))}
               onLongPress={() => playerScores(createEvent(homeTeam, homeOffensePlayer, Event.GOAL_GUEST))} />
           </Col>
-        </Row>
+        </Row> : <Row></Row>}
 
         <Row>
           <View padder></View>
         </Row>
 
-        <Row>
+        {!matchFinished ? <Row>
           <Col>
           <View padder>
             <Button block warning
@@ -110,7 +123,8 @@ class Tracker extends React.Component {
             </Button>
           </View>
           </Col>
-        </Row>
+        </Row> : <Row></Row>}
+
         <Row>
           <View padder>
             <Button block
@@ -119,6 +133,15 @@ class Tracker extends React.Component {
             </Button>
           </View>
         </Row>
+
+        {matchFinished ? <Row>
+          <View padder>
+            <Button block success onPress={() => saveResult()}><Icon name="ios-cloud-upload"/> Save result</Button>
+          </View>
+          <View  padder>
+            <Button block danger onPress={() => newGame()}><Icon name="ios-refresh"/> New game</Button>
+          </View>
+        </Row> : <Row></Row>}
       </Grid>
     );
   }
@@ -135,11 +158,20 @@ Tracker.propTypes = {
   undo: React.PropTypes.func.isRequired,
   playerScores: React.PropTypes.func.isRequired,
   swapPlayers: React.PropTypes.func.isRequired,
+  setScore: React.PropTypes.number.isRequired,
+  newGame: React.PropTypes.func.isRequired,
+  saveResult: React.PropTypes.func.isRequired
 };
 
 Tracker.defaultProps = {};
 
 const style = StyleSheet.create({
+  victoryTeam: {
+    fontSize: 30,
+    lineHeight: 50,
+    alignSelf: 'center',
+    color: Theme.brandSuccess
+  },
   guestTeamName: {
     alignSelf: 'center'
   },

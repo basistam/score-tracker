@@ -22,11 +22,5 @@ const mapStateToProps = (state) => ({
 
 export default connect(mapStateToProps, (dispatch) => Object.assign(
   bindActionCreators(GameActions, dispatch),
-  {
-    swapPlayers: (player1, player2) => {
-      const player1position = player1.get('position');
-      dispatch(PlayersActions.setPlayerPosition(player1.get('id'), player2.get('position')));
-      dispatch(PlayersActions.setPlayerPosition(player2.get('id'), player1position));
-    }
-  }
+  bindActionCreators(PlayersActions, dispatch)
 ))(Tracker);

@@ -21,3 +21,9 @@ export const setPlayerPosition = (id, position) => ({
   id: id,
   position: position
 });
+
+export const swapPlayers = (player1, player2) => (dispatch) => {
+  const player1position = player1.get('position');
+  dispatch(setPlayerPosition(player1.get('id'), player2.get('position')));
+  dispatch(setPlayerPosition(player2.get('id'), player1position));
+}
