@@ -1,129 +1,204 @@
 import React from 'react';
-import {Text, View, Button, H3} from 'native-base';
-import {Col, Row, Grid} from 'react-native-easy-grid';
+import {
+  StyleSheet
+} from 'react-native';
+import {
+  Text,
+  View,
+  Button,
+  Icon
+} from 'native-base';
+import Theme from 'native-base/Components/Themes/light';
+import {
+  Col,
+  Row,
+  Grid
+} from 'react-native-easy-grid';
 import TrackButton from './TrackButton';
+import {createEvent} from '../utils//GameUtils';
+import Event from '../constants/Event';
 
-class Track extends React.Component {
+class Tracker extends React.Component {
   render() {
-    const {team1, team2, onScore, onReset, onSwap, setScore} = this.props;
+    const {
+      homeTeam,
+      guestTeam,
+      guestDefensePlayer,
+      guestOffensePlayer,
+      homeDefensePlayer,
+      homeOffensePlayer,
+      score,
+      undo,
+      playerScores,
+      swapPlayers,
+      setScore,
+      newGame,
+      saveResult
+    } = this.props;
+    const homeTeamScore = score.getIn(['teams', 'home']);
+    const guestTeamScore = score.getIn(['teams', 'guest']);
+    const matchFinished = homeTeamScore == setScore || guestTeamScore == setScore;
+    const victoryTeam = homeTeamScore == setScore ? homeTeam.get('name') : guestTeam.get('name');
+
     return (
       <Grid>
-        <Row>
+        {!matchFinished ? <Row>
           <Col>
-            <View padder>
-              <H3 style={{
-                alignSelf: 'flex-end'
-              }}>{team1.get('name')}</H3>
-            </View>
+            <TrackButton danger
+              player={guestOffensePlayer}
+              score={score.getIn(['players', guestOffensePlayer.get('id')])}
+              onPress={() => playerScores(createEvent(guestTeam, guestOffensePlayer, Event.GOAL_GUEST))}
+              onLongPress={() => playerScores(createEvent(guestTeam, guestOffensePlayer, Event.GOAL_HOME))} />
           </Col>
-          <Col style={{width: 30}}><Text style={{lineHeight: 40, alignSelf: 'center'}}>vs.</Text></Col>
           <Col>
-            <View padder>
-              <H3 style={{
-                alignSelf: 'flex-start'
-              }}>{team2.get('name')}</H3>
-            </View>
+            <TrackButton success
+              player={guestDefensePlayer}
+              score={score.getIn(['players', guestDefensePlayer.get('id')])}
+              onPress={() => playerScores(createEvent(guestTeam, guestDefensePlayer, Event.GOAL_GUEST))}
+              onLongPress={() => playerScores(createEvent(guestTeam, guestDefensePlayer, Event.GOAL_HOME))} />
+          </Col>
+        </Row> : <Row>
+          <View padder>
+            <Text style={style.victoryTeam}>{victoryTeam} won!</Text>
+          </View>
+        </Row>}
+
+        <Row>
+          <View>
+            <Text style={style.homeTeamName}>{guestTeam.get('name')}</Text>
+          </View>
+        </Row>
+
+        <Row>
+          <Col size={2}>
+            <Text style={style.homeTeamScore}><Icon name="ios-arrow-down"/> {homeTeamScore}</Text>
+          </Col>
+          <Col style={styles.scoreDivider}><Text style={style.scoreDividerText}>vs</Text></Col>
+          <Col size={2}>
+            <Text style={style.guestTeamScore}>{guestTeamScore} <Icon name="ios-arrow-up"/></Text>
           </Col>
         </Row>
 
         <Row>
-          <Col>
-            <Text style={{
-                color: team1.get('points') == setScore ? '#5cb85c' : '#000000',
-                alignSelf: 'flex-end',
-                fontSize: 60,
-                lineHeight: 60}}>
-              {team1.get('points')}
-            </Text>
-          </Col>
-          <Col style={{width: 50}}><Text style={{alignSelf: 'center', fontSize: 60, lineHeight: 60}}>-</Text></Col>
-            <Col>
-              <Text style={{
-                  color: team2.get('points') == setScore ? '#5cb85c' : '#000000',
-                  alignSelf: 'flex-start',
-                  fontSize: 60,
-                  lineHeight: 60}}>
-                {team2.get('points')}
-              </Text>
-            </Col>
+          <View>
+            <Text style={style.guestTeamName}>{homeTeam.get('name')}</Text>
+          </View>
         </Row>
 
-        <Row>
+        {!matchFinished ? <Row>
           <Col>
-            <View padder>
-              <TrackButton
-                player={team1.get('player1')}
-                playerId="player1"
-                teamId="team1"
-                pressAction={onScore}
-                />
-            </View>
+            <TrackButton success
+              player={homeDefensePlayer}
+              score={score.getIn(['players', homeDefensePlayer.get('id')])}
+              onPress={() => playerScores(createEvent(homeTeam, homeDefensePlayer, Event.GOAL_HOME))}
+              onLongPress={() => playerScores(createEvent(homeTeam, homeDefensePlayer, Event.GOAL_GUEST))} />
           </Col>
           <Col>
-            <View padder>
-              <TrackButton
-                player={team2.get('player1')}
-                playerId="player1"
-                teamId="team2"
-                pressAction={onScore}/>
-            </View>
+            <TrackButton danger
+              player={homeOffensePlayer}
+              score={score.getIn(['players', homeOffensePlayer.get('id')])}
+              onPress={() => playerScores(createEvent(homeTeam, homeOffensePlayer, Event.GOAL_HOME))}
+              onLongPress={() => playerScores(createEvent(homeTeam, homeOffensePlayer, Event.GOAL_GUEST))} />
           </Col>
-        </Row>
-        <Row>
-          <Col>
-            <View padder>
-              <TrackButton
-                player={team1.get('player2')}
-                playerId="player2"
-                teamId="team1"
-                pressAction={onScore}/>
-            </View>
-          </Col>
-          <Col>
-            <View padder>
-              <TrackButton
-                player={team2.get('player2')}
-                playerId="player2"
-                teamId="team2"
-                pressAction={onScore}/>
-            </View>
-          </Col>
-        </Row>
+        </Row> : <Row></Row>}
 
         <Row>
-          <Col>
-            <View padder>
-              <Button block warning onPress={() => onSwap('team1')}>
-                Swap positions
-              </Button>
-            </View>
-          </Col>
-          <Col>
-            <View padder>
-              <Button block warning onPress={() => onSwap('team2')}>
-                Swap positions
-              </Button>
-            </View>
-          </Col>
+          <View padder></View>
         </Row>
+
+        {!matchFinished ? <Row>
+          <Col>
+          <View padder>
+            <Button block warning
+              onPress={() => swapPlayers(homeOffensePlayer, homeDefensePlayer)} >
+              <Icon name="ios-swap"/>Home
+            </Button>
+          </View>
+          </Col>
+          <Col>
+          <View padder>
+            <Button block warning
+              onPress={() => swapPlayers(guestDefensePlayer, guestOffensePlayer)} >
+              <Icon name="ios-swap"/>Guest
+            </Button>
+          </View>
+          </Col>
+        </Row> : <Row></Row>}
+
         <Row>
-            <View padder>
-              <Button block danger onPress={() => onReset()}>Reset</Button>
-            </View>
+          <View padder>
+            <Button block
+              onPress={() => undo()}>
+              <Icon name="ios-undo"/>Undo
+            </Button>
+          </View>
         </Row>
+
+        {matchFinished ? <Row>
+          <View padder>
+            <Button block success onPress={() => saveResult()}><Icon name="ios-cloud-upload"/> Save result</Button>
+          </View>
+          <View  padder>
+            <Button block danger onPress={() => newGame()}><Icon name="ios-refresh"/> New game</Button>
+          </View>
+        </Row> : <Row></Row>}
       </Grid>
     );
   }
 }
 
-Track.propTypes = {
-  team1: React.PropTypes.object,
-  team2: React.PropTypes.object,
-  onScore: React.PropTypes.func,
-  onSwap: React.PropTypes.func,
-  setScore: React.PropTypes.number,
-  onReset: React.PropTypes.func
+Tracker.propTypes = {
+  homeTeam: React.PropTypes.object.isRequired,
+  guestTeam: React.PropTypes.object.isRequired,
+  guestDefensePlayer: React.PropTypes.object.isRequired,
+  guestOffensePlayer: React.PropTypes.object.isRequired,
+  homeDefensePlayer: React.PropTypes.object.isRequired,
+  homeOffensePlayer: React.PropTypes.object.isRequired,
+  score: React.PropTypes.object.isRequired,
+  undo: React.PropTypes.func.isRequired,
+  playerScores: React.PropTypes.func.isRequired,
+  swapPlayers: React.PropTypes.func.isRequired,
+  setScore: React.PropTypes.number.isRequired,
+  newGame: React.PropTypes.func.isRequired,
+  saveResult: React.PropTypes.func.isRequired,
+  game: React.PropTypes.object.isRequired
 };
-Track.defaultProps = {};
 
-export default Track;
+Tracker.defaultProps = {};
+
+const styles = {
+  scoreDivider: {
+    width: 40
+  }
+};
+
+const style = StyleSheet.create({
+  victoryTeam: {
+    fontSize: 30,
+    lineHeight: 50,
+    alignSelf: 'center',
+    color: Theme.brandSuccess
+  },
+  guestTeamName: {
+    alignSelf: 'center'
+  },
+  homeTeamName: {
+    alignSelf: 'center'
+  },
+  scoreDividerText: {
+    alignSelf: 'center',
+    lineHeight: 70
+  },
+  homeTeamScore: {
+    alignSelf: 'flex-end',
+    fontSize: 80,
+    lineHeight: 80
+  },
+  guestTeamScore: {
+    alignSelf: 'flex-start',
+    fontSize: 80,
+    lineHeight: 80
+  }
+});
+
+export default Tracker;

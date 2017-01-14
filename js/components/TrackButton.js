@@ -1,32 +1,48 @@
 import React from 'react';
-import {Button, Icon} from 'native-base';
+import {Button, Icon, Text, View, Badge} from 'native-base';
+import Immutable from 'immutable';
 
 class TrackButton extends React.Component {
   render() {
-    const {pressAction, player, playerId, teamId} = this.props;
-    const icon = player.get('position') === 'front'
-      ? 'ios-tennisball'
-      : 'ios-hand';
+    const {player, score} = this.props;
     return (
-      <Button block success={player.get('position') === 'front'} onPress={() => {
-        pressAction(teamId, playerId);
-      }} style={{
-        height: 100
-      }}>
-        <Icon name={icon}/>
-        {player.get('name') + '\n' + player.get('points') + ' points'}
-      </Button>
+      <View padder>
+        <Button block style={style.button} {...this.props}>
+          <Icon name={player.get('position') === 'offense' ? 'ios-tennisball' : 'ios-hand'}/>
+          <Text>
+            {player.get('name')}
+          </Text>
+        </Button>
+        <Badge primary style={style.badge}>{score}</Badge>
+      </View>
     );
   }
 }
 
-TrackButton.propTypes = {
-  player: React.PropTypes.object,
-  pressAction: React.PropTypes.func,
-  playerId: React.PropTypes.string,
-  teamId: React.PropTypes.string,
+const style = {
+  button: {
+    height: 100
+  },
+  badge: {
+    position: 'absolute',
+    right: 5,
+    top: 5,
+    elevation: 10
+  }
 };
 
-TrackButton.defaultProps = {};
+TrackButton.propTypes = {
+  player: React.PropTypes.object.isRequired,
+  score: React.PropTypes.number.isRequired
+};
+
+TrackButton.defaultProps = {
+  player: Immutable.fromJS({
+    id: 0,
+    position: 'defense',
+    name: 'Default player'
+  }),
+  points: 0
+};
 
 export default TrackButton;
