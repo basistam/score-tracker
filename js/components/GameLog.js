@@ -21,7 +21,7 @@ class GameLog extends React.Component {
     }
 
     const getGoalTeam = (event) => {
-      return game.get(event.getIn(['type', 'team']) === 'home' ? 'guest' : 'home').get('name');
+      return game.get('teams').get(event.getIn(['type', 'team']) === 'home' ? 'guest' : 'home').get('name');
     }
 
     return (

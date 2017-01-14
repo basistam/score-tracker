@@ -10,7 +10,6 @@ import {
   Icon,
   Button
 } from 'native-base';
-import * as GameUtils from '../utils/GameUtils';
 import dateFormat from 'dateformat';
 import Theme from 'native-base/Components/Themes/light';
 import GameLog from './GameLog';
@@ -36,8 +35,19 @@ class Results extends React.Component {
     }
   }
 
+  removeResult(id) {
+    const expandedCards = this.state.expandedCards;
+    const cardIndex = expandedCards.indexOf(id);
+
+    if (cardIndex != -1) {
+      this.setState({expandedCards: expandedCards.delete(cardIndex)});
+    }
+
+    this.props.removeFromHistory(id);
+  }
+
   render() {
-    const {data, removeFromHistory} = this.props;
+    const {data} = this.props;
 
     const getPlayerIcon = (player) => {
       return player.get('position') === 'defense' ? 'ios-hand' : 'ios-tennisball';
@@ -46,11 +56,13 @@ class Results extends React.Component {
     return (
       <View padder>
         {data.reverse().map((game, i) => {
-          const score = GameUtils.getScore(game);
+          const score = game.get('score');
           const scoreHome = score.get('teams').get('home');
           const scoreGuest = score.get('teams').get('guest');
           const victoryTeam = scoreHome > scoreGuest ? 'home' : 'guest';
           const isExpanded = this.state.expandedCards.includes(game.get('id'));
+          const homeTeam = game.get('teams').get('home');
+          const guestTeam = game.get('teams').get('guest');
 
           return (<Card key={i}>
             <CardItem button header
@@ -59,7 +71,7 @@ class Results extends React.Component {
                 <Row>
                   <Col>
                     <Text>
-                      <Text style={victoryTeam == 'home' ? style.winner : null}>{game.get('home').get('name')}</Text> vs. <Text style={victoryTeam == 'guest' ? style.winner : null}>{game.get('guest').get('name')}</Text>
+                      <Text style={victoryTeam == 'home' ? style.winner : null}>{homeTeam.get('name')}</Text> vs. <Text style={victoryTeam == 'guest' ? style.winner : null}>{guestTeam.get('name')}</Text>
                     </Text>
                     <Text style={style.date}>{dateFormat(game.get('startDate'))} - {dateFormat(game.get('endDate'), 'HH:MM:ss')}</Text>
                   </Col>
@@ -90,7 +102,7 @@ class Results extends React.Component {
                   </Col>
                   <Col size={5}>
                     <Text style={style.playerTeam}>
-                      {game.get(player.get('team')).get('name')}
+                      {game.get('teams').get(player.get('team')).get('name')}
                     </Text>
                   </Col>
                   <Col size={4}>
@@ -102,7 +114,7 @@ class Results extends React.Component {
             </CardItem>}
             {isExpanded && <GameLog game={game}/>}
             {isExpanded && <CardItem button style={style.removeCard}>
-              <Button block transparent onPress={() => removeFromHistory(game.get('id'))}>
+              <Button block transparent onPress={() => this.removeResult(game.get('id'))}>
                 <Text style={style.remove}>Remove this record</Text>
               </Button>
             </CardItem>}

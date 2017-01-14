@@ -25,12 +25,14 @@ export const addEvent = (event) => ({
 
 export const playerScores = (event) => (dispatch, getState) => {
   const state = getState();
-
   const score = GameUtils.getScore(state.get('game')).get('teams');
-  const setScore = state.get('app').get('setScore');
-  if (score.get('home') < setScore && score.get('guest') < setScore) {
-    dispatch(addEvent(event));
+
+  if (score.get('home') == 0 && score.get('guest') == 0) {
+    dispatch(newGame());
   }
+
+  dispatch(addEvent(event));
+  dispatch(setEndDate());
 };
 
 /**
@@ -41,12 +43,11 @@ export const undo = () => ({
 });
 
 export const saveResult = () => (dispatch, getState) => {
-  dispatch(setEndDate(getState().get('game').get('events').last().get('eventDate')));
   const state = getState();
   const game = state.get('game').merge({
-    home: state.getIn(['teams', 'home']),
-    guest: state.getIn(['teams', 'guest']),
-    players: state.get('players')
+    teams: state.get('teams'),
+    players: state.get('players'),
+    score: GameUtils.getScore(state.get('game'))
   });
   dispatch(HistoryActions.addToHistory(game));
   dispatch(newGame());
