@@ -47,13 +47,15 @@ class Results extends React.Component {
       <View padder>
         {data.reverse().map((game, i) => {
           const score = GameUtils.getScore(game);
-          const victoryTeam = score.get('teams').get('home') > score.get('teams').get('guest') ? 'home' : 'guest';
-          const isExpanded = this.state.expandedCards.includes(i);
+          const scoreHome = score.get('teams').get('home');
+          const scoreGuest = score.get('teams').get('guest');
+          const victoryTeam = scoreHome > scoreGuest ? 'home' : 'guest';
+          const isExpanded = this.state.expandedCards.includes(game.get('id'));
 
           return (<Card key={i}>
             <CardItem button header
               style={style.header}
-              onPress={() => this.expandCard(i)}>
+              onPress={() => this.expandCard(game.get('id'))}>
               <Grid>
                 <Row>
                   <Col>
@@ -64,7 +66,7 @@ class Results extends React.Component {
                   </Col>
                   <Col style={style.score}>
                     <Text style={style.result}>
-                      {score.get('teams').get('home')} - {score.get('teams').get('guest')}
+                      {scoreHome} - {scoreGuest}
                     </Text>
                   </Col>
                 </Row>
@@ -72,28 +74,31 @@ class Results extends React.Component {
             </CardItem>
             <CardItem>
               <Grid>
-              {score.get('players').map((player, i) => <Row key={i}>
-                <Col style={style.iconCol}>
-                  <Text style={style.playerIconText}>
-                    <Icon
-                      name={getPlayerIcon(game.get('players').find(player => player.get('id') === i))}
-                      style={style.playerIcon}/>{/*Center icon hack*/' '}
-                  </Text>
-                </Col>
-                <Col size={5}>
-                  <Text style={style.playerName}>
-                    {game.get('players').find(player => player.get('id') === i).get('name')}
-                  </Text>
-                </Col>
-                <Col size={5}>
-                  <Text style={style.playerTeam}>
-                    {game.get(game.get('players').find(player => player.get('id') === i).get('team')).get('name')}
-                  </Text>
-                </Col>
-                <Col size={4}>
-                  <Text style={style.playerScore}>{player} goals</Text>
-                </Col>
-              </Row>)}
+              {score.get('players').map((goals, i) => {
+                const player = game.get('players').find(player => player.get('id') === i);
+                return <Row key={i}>
+                  <Col style={style.iconCol}>
+                    <Text style={style.playerIconText}>
+                      <Icon
+                        name={getPlayerIcon(player)}
+                        style={style.playerIcon}/>{/*Center icon hack*/' '}
+                    </Text>
+                  </Col>
+                  <Col size={5}>
+                    <Text style={style.playerName}>
+                      {player.get('name')}
+                    </Text>
+                  </Col>
+                  <Col size={5}>
+                    <Text style={style.playerTeam}>
+                      {game.get(player.get('team')).get('name')}
+                    </Text>
+                  </Col>
+                  <Col size={4}>
+                    <Text style={style.playerScore}>{goals} goals</Text>
+                  </Col>
+                </Row>
+              })}
               </Grid>
             </CardItem>
             {isExpanded && <GameLog game={game}/>}

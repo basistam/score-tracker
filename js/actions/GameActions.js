@@ -41,8 +41,13 @@ export const undo = () => ({
 });
 
 export const saveResult = () => (dispatch, getState) => {
+  dispatch(setEndDate(getState().get('game').get('events').last().get('eventDate')));
   const state = getState();
-  const game = state.get('game').set('home', state.getIn(['teams', 'home'])).set('guest', state.getIn(['teams', 'guest'])).set('players', state.get('players'));
+  const game = state.get('game').merge({
+    home: state.getIn(['teams', 'home']),
+    guest: state.getIn(['teams', 'guest']),
+    players: state.get('players')
+  });
   dispatch(HistoryActions.addToHistory(game));
   dispatch(newGame());
 };
