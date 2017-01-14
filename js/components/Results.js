@@ -54,7 +54,6 @@ class Results extends React.Component {
 
           return (<Card key={i}>
             <CardItem button header
-              style={style.header}
               onPress={() => this.expandCard(game.get('id'))}>
               <Grid>
                 <Row>
@@ -72,7 +71,7 @@ class Results extends React.Component {
                 </Row>
               </Grid>
             </CardItem>
-            <CardItem>
+            {isExpanded && <CardItem style={style.playersInfo}>
               <Grid>
               {score.get('players').map((goals, i) => {
                 const player = game.get('players').find(player => player.get('id') === i);
@@ -100,7 +99,7 @@ class Results extends React.Component {
                 </Row>
               })}
               </Grid>
-            </CardItem>
+            </CardItem>}
             {isExpanded && <GameLog game={game}/>}
             {isExpanded && <CardItem button style={style.removeCard}>
               <Button block transparent onPress={() => removeFromHistory(game.get('id'))}>
@@ -125,8 +124,8 @@ const style = {
     paddingBottom: 3
   },
   // Header
-  header: {
-    paddingBottom: 0
+  playersInfo: {
+    paddingTop: 0
   },
   playerIcon: {
     fontSize: 15
