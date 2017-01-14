@@ -1,6 +1,5 @@
 import React from 'react';
 import {Button, Icon, Text, View, Badge} from 'native-base';
-import {StyleSheet} from 'react-native';
 import Immutable from 'immutable';
 
 class TrackButton extends React.Component {
@@ -14,21 +13,23 @@ class TrackButton extends React.Component {
             {player.get('name')}
           </Text>
         </Button>
-        <Badge primary style={{
-          position: 'absolute',
-          right: 5,
-          top: 5
-        }}>{score}</Badge>
+        <Badge primary style={style.badge}>{score}</Badge>
       </View>
     );
   }
 }
 
-const style = StyleSheet.create({
+const style = {
   button: {
     height: 100
+  },
+  badge: {
+    position: 'absolute',
+    right: 5,
+    top: 5,
+    elevation: 10
   }
-});
+};
 
 TrackButton.propTypes = {
   player: React.PropTypes.object.isRequired,

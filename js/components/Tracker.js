@@ -33,7 +33,8 @@ class Tracker extends React.Component {
       swapPlayers,
       setScore,
       newGame,
-      saveResult
+      saveResult,
+      game
     } = this.props;
     const homeTeamScore = score.getIn(['teams', 'home']);
     const guestTeamScore = score.getIn(['teams', 'guest']);
@@ -160,7 +161,8 @@ Tracker.propTypes = {
   swapPlayers: React.PropTypes.func.isRequired,
   setScore: React.PropTypes.number.isRequired,
   newGame: React.PropTypes.func.isRequired,
-  saveResult: React.PropTypes.func.isRequired
+  saveResult: React.PropTypes.func.isRequired,
+  game: React.PropTypes.object.isRequired
 };
 
 Tracker.defaultProps = {};

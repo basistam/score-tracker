@@ -18,6 +18,7 @@ const mapStateToProps = (state) => ({
     homeDefensePlayer: getPlayer(state, 'home', 'defense'),
     homeOffensePlayer: getPlayer(state, 'home', 'offense'),
     score: GameUtils.getScore(state.get('game')),
+    game: state.get('game')
 });
 
 export default connect(mapStateToProps, (dispatch) => Object.assign(
