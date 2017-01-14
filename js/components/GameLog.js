@@ -6,7 +6,7 @@ import {
   Icon,
   Col,
   Grid,
-  Text
+  Text,
 } from 'native-base';
 
 class GameLog extends React.Component {
@@ -41,13 +41,7 @@ class GameLog extends React.Component {
                 </Text>
               </Col>
               <Col size={4}>
-                <Text style={style.logItem}>
-                  <Text style={style.logItemBold}>
-                    {event.getIn(['player', 'name'])}
-                  </Text> goal to <Text style={style.logItemBold}>
-                    {game.get(event.get('type').get('team')).get('name')}
-                  </Text>
-                </Text>
+                <Text style={style.logItem}><Text style={style.logItemBold}>{event.getIn(['player', 'name'])}</Text> goal to <Text style={style.logItemBold}>{game.get(event.get('type').get('team')).get('name')}</Text></Text>
               </Col>
               <Col style={style.scoreCol}>
                 <Text style={style.logItemScore}>{homeScore} - {guestScore}</Text>
@@ -62,42 +56,43 @@ class GameLog extends React.Component {
 
 
 const greyColor = '#b5b5b5';
-const logFontSize = 12;
+const logFontSize = 11;
+const logLineHeight = 13;
 
 const style = {
     // Game log
     dateColText: {
       fontSize: logFontSize,
-      color: greyColor
+      color: greyColor,
+      lineHeight: logLineHeight
     },
     logItem: {
-      fontSize: logFontSize
+      fontSize: logFontSize,
+      lineHeight: logLineHeight
     },
     logItemBold: {
       fontSize: logFontSize,
-      fontWeight: 'bold'
+      fontWeight: 'bold',
+      lineHeight: logLineHeight
     },
     logItemScore: {
       fontSize: logFontSize,
-      alignSelf: 'center'
-    },
-
-    iconCol: {
-      width: 18
+      alignSelf: 'center',
+      lineHeight: logLineHeight
     },
 
     playerIcon: {
-      fontSize: 15
+      fontSize: logFontSize
     },
-
-
-
     // Columns
     dateCol: {
-      width: 55
+      width: logFontSize * 5
     },
     scoreCol: {
       width: 40
+    },
+    iconCol: {
+      width: logFontSize + 2
     },
 }
 

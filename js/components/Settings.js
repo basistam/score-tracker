@@ -11,6 +11,8 @@ class Settings extends React.Component {
     const {players, setPlayerName, teams, setTeamName} = this.props;
     const rows = [];
 
+    console.log(setTeamName);
+
     teams.forEach((team) => {
       rows.push(
         <ListItem itemDivider key={team.get('id') + 'divider'}>
@@ -41,14 +43,14 @@ class Settings extends React.Component {
   }
 
   render() {
-    const {onChangeSetScore, setScore} = this.props;
+    const {setSetScore, setScore} = this.props;
     return (
       <List>
         <ListItem itemDivider>
           <Text>Set score</Text>
         </ListItem>
 
-        <DebouncedInput keyboardType="numeric" label="Set score" value={String(setScore)} maxLength={12} onChangeText={onChangeSetScore}/>
+        <DebouncedInput keyboardType="numeric" label="Set score" value={String(setScore)} maxLength={12} onChangeText={(value) => setSetScore(Math.floor(value))}/>
 
         {this.getTeamSettings()}
       </List>
@@ -57,12 +59,12 @@ class Settings extends React.Component {
 }
 
 Settings.propTypes = {
-  setScore: React.PropTypes.number,
-  onChangeSetScore: React.PropTypes.func,
-  players: React.PropTypes.object,
-  teams: React.PropTypes.object,
-  setTeamName: React.PropTypes.func,
-  setPlayerName: React.PropTypes.func
+  setScore: React.PropTypes.number.isRequired,
+  setSetScore: React.PropTypes.func.isRequired,
+  players: React.PropTypes.object.isRequired,
+  teams: React.PropTypes.object.isRequired,
+  setTeamName: React.PropTypes.func.isRequired,
+  setPlayerName: React.PropTypes.func.isRequired
 };
 Settings.defaultProps = {};
 

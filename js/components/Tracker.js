@@ -33,8 +33,7 @@ class Tracker extends React.Component {
       swapPlayers,
       setScore,
       newGame,
-      saveResult,
-      game
+      saveResult
     } = this.props;
     const homeTeamScore = score.getIn(['teams', 'home']);
     const guestTeamScore = score.getIn(['teams', 'guest']);
@@ -74,7 +73,7 @@ class Tracker extends React.Component {
           <Col size={2}>
             <Text style={style.homeTeamScore}><Icon name="ios-arrow-down"/> {homeTeamScore}</Text>
           </Col>
-          <Col size={1}><Text style={style.scoreDividerText}>vs</Text></Col>
+          <Col style={styles.scoreDivider}><Text style={style.scoreDividerText}>vs</Text></Col>
           <Col size={2}>
             <Text style={style.guestTeamScore}>{guestTeamScore} <Icon name="ios-arrow-up"/></Text>
           </Col>
@@ -167,6 +166,12 @@ Tracker.propTypes = {
 
 Tracker.defaultProps = {};
 
+const styles = {
+  scoreDivider: {
+    width: 40
+  }
+};
+
 const style = StyleSheet.create({
   victoryTeam: {
     fontSize: 30,
@@ -182,7 +187,7 @@ const style = StyleSheet.create({
   },
   scoreDividerText: {
     alignSelf: 'center',
-    lineHeight: 80
+    lineHeight: 70
   },
   homeTeamScore: {
     alignSelf: 'flex-end',
