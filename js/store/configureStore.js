@@ -1,17 +1,24 @@
 import {
   createStore,
-  applyMiddleware
+  applyMiddleware,
+  compose
 } from 'redux';
 import rootReducer from '../reducers';
-import thunk from 'redux-thunk';
-
+import thunk from 'redux-thunk'
+import {persistStore, autoRehydrate} from 'redux-persist-immutable';
+import {AsyncStorage} from 'react-native';
 
 export default (initialState) => {
   let store = createStore(
     rootReducer,
     initialState,
-    applyMiddleware(thunk)
+    compose(
+      applyMiddleware(thunk),
+      autoRehydrate()
+    )
   );
+
+  persistStore(store, {storage: AsyncStorage});
 
   if (module.hot) {
     // Enable Webpack hot module replacement for reducers
