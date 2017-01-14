@@ -20,6 +20,10 @@ class GameLog extends React.Component {
       return player.get('position') === 'defense' ? 'ios-hand' : 'ios-tennisball';
     }
 
+    const getGoalTeam = (event) => {
+      return game.get(event.get('type').get('team') === 'home' ? 'guest' : 'home').get('name');
+    }
+
     return (
       <CardItem>
         <Grid>
@@ -41,7 +45,7 @@ class GameLog extends React.Component {
                 </Text>
               </Col>
               <Col size={4}>
-                <Text style={style.logItem}><Text style={style.logItemBold}>{event.getIn(['player', 'name'])}</Text> goal to <Text style={style.logItemBold}>{game.get(event.get('type').get('team')).get('name')}</Text></Text>
+                <Text style={style.logItem}><Text style={style.logItemBold}>{event.getIn(['player', 'name'])}</Text> goal to <Text style={style.logItemBold}>{getGoalTeam(event)}</Text></Text>
               </Col>
               <Col style={style.scoreCol}>
                 <Text style={style.logItemScore}>{homeScore} - {guestScore}</Text>

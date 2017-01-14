@@ -14,8 +14,28 @@ import * as GameUtils from '../utils/GameUtils';
 import dateFormat from 'dateformat';
 import Theme from 'native-base/Components/Themes/light';
 import GameLog from './GameLog';
+import Immutable from 'immutable';
 
 class Results extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      expandedCards: new Immutable.List()
+    }
+  }
+
+  expandCard(index) {
+    const expandedCards = this.state.expandedCards;
+    const cardIndex = expandedCards.indexOf(index);
+
+    if (cardIndex == -1) {
+      this.setState({expandedCards: expandedCards.push(index)});
+    } else {
+      this.setState({expandedCards: expandedCards.delete(cardIndex)});
+    }
+  }
+
   render() {
     const {data, removeFromHistory} = this.props;
 
@@ -28,9 +48,12 @@ class Results extends React.Component {
         {data.reverse().map((game, i) => {
           const score = GameUtils.getScore(game);
           const victoryTeam = score.get('teams').get('home') > score.get('teams').get('guest') ? 'home' : 'guest';
+          const isExpanded = this.state.expandedCards.includes(i);
 
           return (<Card key={i}>
-            <CardItem header style={style.header}>
+            <CardItem button header
+              style={style.header}
+              onPress={() => this.expandCard(i)}>
               <Grid>
                 <Row>
                   <Col>
@@ -62,18 +85,23 @@ class Results extends React.Component {
                     {game.get('players').find(player => player.get('id') === i).get('name')}
                   </Text>
                 </Col>
-                <Col size={2}>
+                <Col size={5}>
+                  <Text style={style.playerTeam}>
+                    {game.get(game.get('players').find(player => player.get('id') === i).get('team')).get('name')}
+                  </Text>
+                </Col>
+                <Col size={4}>
                   <Text style={style.playerScore}>{player} goals</Text>
                 </Col>
               </Row>)}
               </Grid>
             </CardItem>
-            <GameLog game={game}/>
-            <CardItem button style={style.removeCard}>
+            {isExpanded && <GameLog game={game}/>}
+            {isExpanded && <CardItem button style={style.removeCard}>
               <Button block transparent onPress={() => removeFromHistory(game.get('id'))}>
                 <Text style={style.remove}>Remove this record</Text>
               </Button>
-            </CardItem>
+            </CardItem>}
           </Card>);
         })}
       </View>
@@ -112,6 +140,9 @@ const style = {
     alignSelf: 'flex-end',
     fontSize: 27,
     lineHeight: 40
+  },
+  playerTeam: {
+    color: greyColor
   },
 
   // Columns
