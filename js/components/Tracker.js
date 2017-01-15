@@ -17,8 +17,32 @@ import {
 import TrackButton from './TrackButton';
 import {createEvent} from '../utils//GameUtils';
 import Event from '../constants/Event';
+import KeepAwake from 'react-native-keep-awake';
+
+const SCREEN_ON_TIMEOUT = 5 * 60000;
 
 class Tracker extends React.Component {
+  state = {}
+
+  static prpoTypes
+
+  refreshKeepAwake() {
+    KeepAwake.activate();
+    if (this.state.deactivateTimeout) {
+      clearInterval(this.state.deactivateTimeout);
+    }
+    const deactivateTimeout = setTimeout(() => KeepAwake.deactivate(), SCREEN_ON_TIMEOUT);
+    this.setState({deactivateTimeout: deactivateTimeout});
+  }
+
+  componentDidMount() {
+    this.refreshKeepAwake();
+  }
+
+  componentWillReceiveProps() {
+    this.refreshKeepAwake();
+  }
+
   render() {
     const {
       homeTeam,
