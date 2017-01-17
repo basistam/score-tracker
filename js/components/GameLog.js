@@ -8,6 +8,8 @@ import {
   Grid,
   Text,
 } from 'native-base';
+import Theme from 'native-base/Components/Themes/light';
+import Immutable from 'immutable';
 
 class GameLog extends React.Component {
   render() {
@@ -22,6 +24,19 @@ class GameLog extends React.Component {
 
     const getGoalTeam = (event) => {
       return game.get('teams').get(event.getIn(['type', 'team']) === 'home' ? 'guest' : 'home').get('name');
+    }
+
+    const getEventStyle = (game, event, bold) => {
+      let s = Immutable.fromJS(style.logItem);
+      if (bold) {
+        s = Immutable.fromJS(style.logItemBold);
+      }
+
+      if(event.get('type').get('team') != event.get('player').get('team')) {
+        s = s.set('color', Theme.brandDanger);
+      }
+
+      return s.toJS();
     }
 
     return (
@@ -45,7 +60,15 @@ class GameLog extends React.Component {
                 </Text>
               </Col>
               <Col size={4}>
-                <Text style={style.logItem}><Text style={style.logItemBold}>{event.getIn(['player', 'name'])}</Text> goal to <Text style={style.logItemBold}>{getGoalTeam(event)}</Text></Text>
+                <Text style={getEventStyle(game, event)}>
+                  <Text style={getEventStyle(game, event, true)}>
+                    {event.getIn(['player', 'name'])}
+                  </Text>
+                  {' goal to '}
+                  <Text style={getEventStyle(game, event, true)}>
+                    {getGoalTeam(event)}
+                  </Text>
+                </Text>
               </Col>
               <Col style={style.scoreCol}>
                 <Text style={style.logItemScore}>{homeScore} - {guestScore}</Text>
